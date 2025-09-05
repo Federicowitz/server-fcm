@@ -1,0 +1,14 @@
+[
+    {
+        "id": 1,
+        "email": "test@example.com",
+        "password": "password123",
+        "publicKey": "AZxGm5Pyoo8gR4u9pJnFQYN8EnW6VxGiLZCvK5gnfEpx"
+    },
+    {
+        "id": 2,
+        "email": "test2@example.com",
+        "password": "password123",
+        "publicKey": "GWe2Eo15FqN96xJFhN8n8MK6kqoUGiJqCHyUSfj4REwS"
+    }
+]
