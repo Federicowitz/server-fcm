@@ -13,7 +13,7 @@ const DB_FILE = './users.json';
 
 // --- INIZIALIZZAZIONE FIREBASE ADMIN SDK ---
 // Assicurati che il file 'serviceAccountKey.json' sia nella stessa cartella
-const serviceAccount = require('./serviceAccountKey.json');
+const serviceAccount = JSON.parse(process.env.GOOGLE_APPLICATION_CREDENTIALS_JSON);
 
 admin.initializeApp({
   credential: admin.credential.cert(serviceAccount)
