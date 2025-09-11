@@ -12,6 +12,15 @@ const PORT = process.env.PORT || 3000;
 const SALT_ROUNDS = 10;
 const JWT_SECRET = process.env.JWT_SECRET; // Da impostare su Render
 
+const toCamelCase = (obj) => {
+  const newObj = {};
+  for (let key in obj) {
+    const camelKey = key.replace(/_([a-z])/g, (g) => g[1].toUpperCase());
+    newObj[camelKey] = obj[key];
+  }
+  return newObj;
+};
+
 // --- Connessione PostgreSQL ---
 const pool = new Pool({
   connectionString: process.env.DATABASE_URL,
@@ -62,30 +71,34 @@ app.post('/register', async (req, res) => {
 // --- ENDPOINT LOGIN ---
 app.post('/login', async (req, res) => {
     const { identifier, password } = req.body;
-    if (!identifier || !password) return res.status(400).json({ message: 'Identificativo e password obbligatori.' });
+    if (!identifier || !password) return res.status(401).json({ message: 'Credenziali obbligatorie.' });
 
     try {
         const query = 'SELECT * FROM users WHERE email = $1 OR username = $1';
         const userRes = await pool.query(query, [identifier]);
         if (userRes.rows.length === 0) return res.status(401).json({ message: 'Credenziali non valide.' });
 
-        const user = userRes.rows[0];
-        const isPasswordValid = await bcrypt.compare(password, user.password_hash);
+        const userWithSnakeCase = userRes.rows[0];
+        const isPasswordValid = await bcrypt.compare(password, userWithSnakeCase.password_hash);
         if (!isPasswordValid) return res.status(401).json({ message: 'Credenziali non valide.' });
         
+        // Convertiamo l'utente in camelCase per il resto della logica
+        const user = toCamelCase(userWithSnakeCase);
+
         const expiresInSeconds = 3600; // 1 ora
         const tokenPayload = { id: user.id, username: user.username };
         const token = jwt.sign(tokenPayload, JWT_SECRET, { expiresIn: `${expiresInSeconds}s` });
         
         res.cookie('token', token, { httpOnly: true, maxAge: expiresInSeconds * 1000 });
 
-        const { password_hash, ...userToReturn } = user; // Rimuove l'hash dalla risposta
-        res.status(200).json({ message: 'Login effettuato!', user: userToReturn });
+        delete user.passwordHash; // Rimuove l'hash in camelCase
+        res.status(200).json({ message: 'Login effettuato!', user: user });
     } catch (err) {
         console.error(err);
         res.status(500).json({ message: 'Errore del server' });
     }
 });
+
 
 // --- MIDDLEWARE AUTENTICAZIONE ---
 const authenticateToken = (req, res, next) => {
@@ -100,78 +113,70 @@ const authenticateToken = (req, res, next) => {
 
 // --- ENDPOINT INVIO TRANSAZIONE (MODIFICATO per usare il middleware) ---
 app.post('/send-transaction-fcm', authenticateToken, async (req, res) => {
-    const { recipientIdentifier, amount } = req.body;
-    const senderId = req.user.id;
+  const { recipientIdentifier, amount } = req.body;
+  const senderId = req.user.id;
 
+  try {
+    const senderRes = await pool.query('SELECT * FROM users WHERE id=$1', [senderId]);
+    if (senderRes.rows.length === 0) return res.status(404).json({ message: 'Utente mittente non trovato.' });
+    
+    // Convertiamo subito il mittente in camelCase
+    const sender = toCamelCase(senderRes.rows[0]);
+
+    let recipientPubKey;
     try {
-        const senderRes = await pool.query('SELECT * FROM users WHERE id=$1', [senderId]);
-        const sender = senderRes.rows[0];
-
-        let recipientPubKey;
-        try {
-        recipientPubKey = new solanaWeb3.PublicKey(recipientIdentifier);
-        } catch (e) {
-        const recipientRes = await pool.query('SELECT public_key FROM users WHERE email=$1 OR username=$1', [recipientIdentifier]);
-        if (recipientRes.rows.length === 0 || !recipientRes.rows[0].public_key) {
-            return res.status(404).json({ message: 'Destinatario non trovato o senza wallet.' });
-        }
-        recipientPubKey = new solanaWeb3.PublicKey(recipientRes.rows[0].public_key);
-        }
-
-        const senderPubKey = new solanaWeb3.PublicKey(sender.publicKey);
-        const { blockhash } = await connection.getLatestBlockhash();
-        
-        const transaction = new solanaWeb3.Transaction({
-            recentBlockhash: blockhash,
-            feePayer: senderPubKey,
-        }).add(solanaWeb3.SystemProgram.transfer({
-            fromPubkey: senderPubKey,
-            toPubkey: recipientPublicKey,
-            lamports: parseFloat(amount) * solanaWeb3.LAMPORTS_PER_SOL,
-        }));
-
-        const serializedTransaction = transaction.serialize({ requireAllSignatures: false }).toString('base64');
-        
-        const message = {
-            notification: { 
-                title: 'Richiesta di Firma Transazione', 
-                body: `Richiesta di invio di ${amount} SOL.` 
-            },
-            data: { 
-                unsignedTransaction: serializedTransaction 
-            },
-            android: { priority: 'high' },
-            token: sender.fcmToken // Usa il token del mittente, che è l'utente loggato
-        };
-        
-        // Chiamata a Firebase che era stata omessa
-        const fcmResponse = await admin.messaging().send(message);
-        console.log("Messaggio FCM inviato con successo:", fcmResponse);
-        
-        // --- FINE BLOCCO DI CODICE CHE ERA MANCANTE ---
-
-        res.status(200).json({ message: 'Richiesta di firma inviata al dispositivo.' });
-
-    } catch (error) {
-        console.error('Errore in /send-transaction-fcm:', error);
-        res.status(500).json({ message: 'Errore interno del server: ' + error.message });
+      recipientPubKey = new solanaWeb3.PublicKey(recipientIdentifier);
+    } catch (e) {
+      const recipientRes = await pool.query('SELECT public_key FROM users WHERE email=$1 OR username=$1', [recipientIdentifier]);
+      if (recipientRes.rows.length === 0 || !recipientRes.rows[0].public_key) {
+        return res.status(404).json({ message: 'Destinatario non trovato o senza wallet.' });
+      }
+      recipientPubKey = new solanaWeb3.PublicKey(recipientRes.rows[0].public_key);
     }
+    
+    // Ora usiamo le proprietà in camelCase, come 'sender.publicKey'
+    const senderPubKey = new solanaWeb3.PublicKey(sender.publicKey);
+    const { blockhash } = await connection.getLatestBlockhash();
+    
+    const transaction = new solanaWeb3.Transaction({
+      recentBlockhash: blockhash,
+      feePayer: senderPubKey,
+    }).add(solanaWeb3.SystemProgram.transfer({
+      fromPubkey: senderPubKey,
+      toPubkey: recipientPubKey,
+      lamports: parseFloat(amount) * solanaWeb3.LAMPORTS_PER_SOL,
+    }));
+
+    const serializedTransaction = transaction.serialize({ requireAllSignatures: false }).toString('base64');
+    
+    const message = {
+      notification: { title: 'Richiesta di Firma Transazione', body: `Richiesta di invio di ${amount} SOL.` },
+      data: { unsignedTransaction: serializedTransaction },
+      token: sender.fcmToken // Usa la proprietà camelCase
+    };
+    
+    await admin.messaging().send(message);
+    res.status(200).json({ message: 'Richiesta inviata al dispositivo.' });
+
+  } catch (err) {
+    console.error("Errore Dettagliato:", err);
+    res.status(500).json({ message: `Errore interno del server: ${err.message}` });
+  }
 });
+
 // --- NUOVI ENDPOINT PER LA SESSIONE ---
 // Endpoint per verificare se l'utente è già loggato (chiamato al caricamento della pagina)
-app.get('/check-session', authenticateToken, (req, res) => {
-    // Se il middleware 'authenticateToken' passa, significa che l'utente è loggato.
-    // Troviamo i suoi dati completi per restituirli al frontend.
-    const users = readUsers();
-    const user = users.find(u => u.id === req.user.id);
-    if (!user) {
-        return res.status(404).json({ message: 'Utente non trovato.'});
+app.get('/check-session', authenticateToken, async (req, res) => {
+    try {
+        const userRes = await pool.query('SELECT * FROM users WHERE id=$1', [req.user.id]);
+        if (userRes.rows.length === 0) return res.status(404).json({ message: 'Utente non trovato.'});
+        
+        const user = toCamelCase(userRes.rows[0]);
+        delete user.passwordHash;
+        res.json({ user });
+    } catch (err) {
+        res.status(500).json({ message: 'Errore del server' });
     }
-
-    const userToReturn = { ...user };
-    delete userToReturn.passwordHash;
-    delete userToReturn.fcmToken;
-    res.json({ user: userToReturn });
 });
 
 // Endpoint per il logout
