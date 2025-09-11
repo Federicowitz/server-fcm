@@ -1,3 +1,4 @@
+<!DOCTYPE html>
 <html lang="it">
 <head>
     <meta charset="UTF-8">
@@ -10,79 +11,163 @@
             --primary-color: #9945FF;
             --text-color: #FFFFFF;
             --text-secondary: #AAAAAA;
-            --error-color: #D32F2F;
+            --border-color: #333333;
         }
-        body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; max-width: 700px; margin: auto; padding: 20px; background-color: var(--bg-color); color: var(--text-color); }
-        .container { background-color: var(--surface-color); padding: 25px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2); }
-        h1, h2 { text-align: center; color: var(--text-color); border-bottom: 1px solid #333; padding-bottom: 15px; }
-        label { display: block; margin-bottom: 8px; font-weight: bold; color: var(--text-secondary); }
-        input { width: 100%; padding: 12px; box-sizing: border-box; border: 1px solid #333; border-radius: 8px; background-color: #333; color: var(--text-color); font-size: 16px; }
-        button { width: 100%; padding: 14px; cursor: pointer; background-color: var(--primary-color); color: white; border: none; border-radius: 8px; font-size: 18px; font-weight: bold; margin-top: 15px; transition: background-color 0.2s; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+        .main-wrapper {
+            width: 100%;
+            max-width: 500px;
+        }
+        .container {
+            background-color: var(--surface-color);
+            padding: 25px;
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
+        }
+        h1, h2 {
+            text-align: center;
+            color: var(--text-color);
+            margin-top: 0;
+            margin-bottom: 25px;
+        }
+        .form-group {
+            margin-bottom: 20px;
+        }
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: bold;
+            color: var(--text-secondary);
+            font-size: 14px;
+        }
+        input {
+            width: 100%;
+            padding: 12px;
+            box-sizing: border-box;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            background-color: var(--border-color);
+            color: var(--text-color);
+            font-size: 16px;
+        }
+        button {
+            width: 100%;
+            padding: 14px;
+            cursor: pointer;
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 18px;
+            font-weight: bold;
+            margin-top: 15px;
+            transition: background-color 0.2s;
+        }
         button:hover { background-color: #7a37cc; }
-        button:disabled { background-color: #555; cursor: not-allowed; }
-        #logoutButton { background-color: #444; width: auto; padding: 8px 16px; font-size: 14px; }
-        .response { margin-top: 20px; padding: 12px; border-radius: 8px; display: none; }
+        .welcome-container { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
+        #logoutButton { background-color: #444; width: auto; padding: 8px 16px; font-size: 14px; margin-top: 0; }
+        .response { margin-top: 20px; padding: 12px; border-radius: 8px; display: none; text-align: center; }
         .success { background-color: rgba(40, 167, 69, 0.2); color: #28a745; }
         .error { background-color: rgba(220, 53, 69, 0.2); color: #dc3545; }
-        .welcome-container { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
-        
-        /* Stili per la lista degli asset */
-        #asset-list { list-style: none; padding: 0; margin-top: 20px; }
-        .asset-row { display: flex; align-items: center; padding: 15px; border-bottom: 1px solid #333; }
-        .asset-row:last-child { border-bottom: none; }
-        .asset-logo { width: 40px; height: 40px; border-radius: 20px; margin-right: 15px; }
-        .asset-info { flex-grow: 1; }
-        .asset-name { font-weight: bold; font-size: 16px; }
-        .asset-balance { color: var(--text-secondary); font-size: 14px; }
-        .asset-send-btn { background-color: #333; padding: 8px 16px; font-size: 14px; margin: 0; width: auto; }
-        
-        /* Stili per la modale di invio */
-        #send-modal { display: none; position: fixed; z-index: 1000; left: 0; top: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.7); justify-content: center; align-items: center; }
-        #send-modal .container { width: 90%; max-width: 500px; }
+
+        /* --- NUOVI STILI PER IL WALLET --- */
+        .wallet-info {
+            background-color: var(--border-color);
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 5px;
+        }
+        .wallet-address-container {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        .wallet-address {
+            font-family: monospace;
+            font-size: 14px;
+            color: var(--text-color);
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        .wallet-actions {
+            display: flex;
+            gap: 10px;
+            margin-left: 15px;
+        }
+        .wallet-icon-btn {
+            background: none;
+            border: none;
+            color: var(--text-secondary);
+            cursor: pointer;
+            font-size: 20px;
+            padding: 0;
+            margin: 0;
+            transition: color 0.2s;
+        }
+        .wallet-icon-btn:hover { color: var(--primary-color); }
     </style>
 </head>
 <body>
 
     <!-- Sezione di Login (visibile di default) -->
-    <div id="login-section" class="container">
-        <h1>Login PrimeGenesis</h1>
-        <form id="loginForm">
-            <div class="form-group">
-                <label for="loginIdentifier">Email o Username</label>
-                <input type="text" id="loginIdentifier" required>
-            </div>
-            <div class="form-group">
-                <label for="loginPassword">Password</label>
-                <input type="password" id="loginPassword" required>
-            </div>
-            <button type="submit">Accedi</button>
-        </form>
-        <div id="login-response" class="response"></div>
-    </div>
-
-    <!-- Sezione Transazione (nascosta di default) -->
-    <div id="transaction-section" class="container" style="display: none;">
-        <div class="welcome-container">
-            <h2 style="text-align: left; margin: 0;">Invia Transazione</h2>
-            <button type="button" id="logoutButton">Logout</button>
+    <div class="main-wrapper">
+        <!-- Sezione di Login -->
+        <div id="login-section" class="container">
+            <h1>Dashboard Login</h1>
+            <form id="loginForm"><!-- ... (contenuto form invariato) ... --></form>
+            <div id="login-response" class="response"></div>
         </div>
-        <p id="welcome-message"></p>
-        <form id="txForm">
-            <input type="hidden" id="userIdentifier">
-            <div class="form-group">
-                <!-- MODIFICATO: Etichetta e placeholder aggiornati -->
-                <label for="recipientIdentifier">Destinatario (Indirizzo Solana, Email o Username)</label>
-                <input type="text" id="recipientIdentifier" placeholder="Es: Bx...yZ oppure utente@mail.com" required>
+    
+        <!-- Sezione Transazione -->
+        <div id="transaction-section" class="container" style="display: none;">
+            <div class="welcome-container">
+                <h2 style="text-align: left; margin: 0;">Dashboard</h2>
+                <button type="button" id="logoutButton">Logout</button>
             </div>
-            <div class="form-group">
-                <label for="amount">Importo (in SOL)</label>
-                <input type="number" id="amount" step="0.001" placeholder="Es: 0.1" required>
+            
+            <!-- NUOVO BLOCCO PER LE INFO UTENTE E WALLET -->
+            <div class="user-info">
+                <p id="welcome-message" style="margin-bottom: 5px;"></p>
+                <div class="wallet-info">
+                    <label>Wallet Associato</label>
+                    <div class="wallet-address-container">
+                        <span id="wallet-address-short" class="wallet-address"></span>
+                        <div class="wallet-actions">
+                            <button id="copy-wallet-btn" class="wallet-icon-btn" title="Copia indirizzo">📋</button>
+                            <a id="solscan-link" href="#" target="_blank" class="wallet-icon-btn" title="Vedi su Solscan">↗️</a>
+                        </div>
+                    </div>
+                </div>
             </div>
-            <button type="submit">Prepara e Invia Richiesta</button>
-        </form>
-        <div id="tx-response" class="response"></div>
+    
+            <h2 style="margin-top: 30px;">Invia Transazione</h2>
+            <form id="txForm">
+                <input type="hidden" id="userIdentifier">
+                <div class="form-group">
+                    <label for="recipientIdentifier">Destinatario (Indirizzo, Email o Username)</label>
+                    <input type="text" id="recipientIdentifier" placeholder="Es: Bx...yZ oppure utente@mail.com" required>
+                </div>
+                <div class="form-group">
+                    <label for="amount">Importo (in SOL)</label>
+                    <input type="number" id="amount" step="0.001" placeholder="Es: 0.1" required>
+                </div>
+                <button type="submit">Prepara e Invia Richiesta</button>
+            </form>
+            <div id="tx-response" class="response"></div>
+        </div>
     </div>
-
+    
     <script>
         // Riferimenti agli elementi del DOM
         const loginSection = document.getElementById('login-section');
@@ -92,6 +177,9 @@
         const loginResponseDiv = document.getElementById('login-response');
         const txResponseDiv = document.getElementById('tx-response');
         const logoutButton = document.getElementById('logoutButton');
+
+        const copyWalletBtn = document.getElementById('copy-wallet-btn');
+        let fullWalletAddress = ''; // Variabile globale per conservare l'indirizzo completo
 
         /**
          * NUOVA FUNZIONE: Prepara e mostra la UI per l'utente loggato.
@@ -105,6 +193,35 @@
             loginSection.style.display = 'none';
             txSection.style.display = 'block';
         }
+
+         function showTransactionUI(user) {
+            fullWalletAddress = user.publicKey; // Salva l'indirizzo completo
+    
+            document.getElementById('welcome-message').textContent = `Benvenuto, ${user.firstName}!`;
+            
+            // Mostra l'indirizzo abbreviato
+            const shortAddress = `${user.publicKey.substring(0, 4)}...${user.publicKey.substring(user.publicKey.length - 4)}`;
+            document.getElementById('wallet-address-short').textContent = shortAddress;
+    
+            // Imposta il link a Solscan Devnet
+            document.getElementById('solscan-link').href = `https://solscan.io/account/${user.publicKey}?cluster=devnet`;
+            
+            document.getElementById('userIdentifier').value = user.username;
+            loginSection.style.display = 'none';
+            txSection.style.display = 'block';
+        }
+    
+        /**
+         * NUOVA FUNZIONE: Copia l'indirizzo del wallet negli appunti
+         */
+        copyWalletBtn.addEventListener('click', () => {
+            navigator.clipboard.writeText(fullWalletAddress).then(() => {
+                alert('Indirizzo del wallet copiato!');
+            }).catch(err => {
+                console.error('Errore durante la copia:', err);
+                alert('Impossibile copiare l\'indirizzo.');
+            });
+        });
 
         
         // --- LOGICA DI CARICAMENTO PAGINA (MODIFICATA) USA COOKIE ---
