@@ -157,11 +157,9 @@
          * sia al caricamento della pagina se troviamo un utente nel localStorage.
          */
         function showTransactionUI(user) {
-            // Popola i campi con i dati dell'utente
+            // Ora questo funzionerà perché il server invia le proprietà in camelCase
             document.getElementById('welcome-message').textContent = `Benvenuto, ${user.firstName}! Stai inviando dal wallet: ${user.publicKey}`;
-            document.getElementById('userIdentifier').value = user.username; // Usiamo lo username come identificativo per le richieste
-
-            // Mostra la sezione giusta e nascondi l'altra
+            document.getElementById('userIdentifier').value = user.username;
             loginSection.style.display = 'none';
             txSection.style.display = 'block';
         }
