@@ -1,19 +1,23 @@
 {
-  "name": "server",
+  "name": "server-produzione",
   "version": "1.0.0",
-  "main": "index.js",
+  "description": "Server per firma remota Solana con DB PostgreSQL",
+  "main": "server.js",
   "scripts": {
+    "start": "node server.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
-  "description": "",
   "dependencies": {
     "@solana/web3.js": "^1.98.4",
-    "body-parser": "^2.2.0",
-    "express": "^5.1.0",
-    "firebase-admin": "^13.5.0",
-    "pg": "^8.16.3"
+    "body-parser": "^1.20.2",
+    "bcrypt": "^5.1.1",
+    "cookie-parser": "^1.4.6",
+    "express": "^4.19.2",
+    "firebase-admin": "^12.1.0",
+    "jsonwebtoken": "^9.0.2",
+    "pg": "^8.11.5"
   }
 }
