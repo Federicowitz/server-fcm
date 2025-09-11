@@ -85,7 +85,7 @@ app.post('/login', async (req, res) => {
         // Convertiamo l'utente in camelCase per il resto della logica
         const user = toCamelCase(userWithSnakeCase);
 
-        const expiresInSeconds = 3600; // 1 ora
+        const expiresInSeconds = 300; // 1 ora
         const tokenPayload = { id: user.id, username: user.username };
         const token = jwt.sign(tokenPayload, JWT_SECRET, { expiresIn: `${expiresInSeconds}s` });
         
