@@ -27,6 +27,7 @@
         .main-wrapper {
             width: 100%;
             max-width: 500px;
+            margin-bottom: 10vh;
         }
         .container {
             background-color: var(--surface-color);
@@ -196,13 +197,7 @@
          * Questa funzione viene chiamata sia dopo un login riuscito,
          * sia al caricamento della pagina se troviamo un utente nel localStorage.
          */
-        function showTransactionUI(user) {
-            // Ora questo funzionerà perché il server invia le proprietà in camelCase
-            document.getElementById('welcome-message').textContent = `Benvenuto, ${user.firstName}! Stai inviando dal wallet: ${user.publicKey}`;
-            document.getElementById('userIdentifier').value = user.username;
-            loginSection.style.display = 'none';
-            txSection.style.display = 'block';
-        }
+      
 
          function showTransactionUI(user) {
             fullWalletAddress = user.publicKey; // Salva l'indirizzo completo
