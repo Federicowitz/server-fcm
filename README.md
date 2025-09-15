@@ -1,3 +1,86 @@
+# EN
+
+# PrimeGenesis Dashboard
+
+This project is a **side project in active development** for a future MVP (Minimum Viable Product).
+
+The application allows users to register, login, and send transactions on the **Solana Devnet**, with push notifications to request transaction signing. ⚡ The app is live, but new features are continuously being developed.
+
+**Maximum security:** the user's private key **never leaves their device**.
+
+## Main Features
+
+* Secure **registration and login** using password hashing and JWT.
+* **User session management** via secure cookies.
+* **Sending SOL transactions** on the Solana Devnet.
+* **Push notifications** via Firebase Cloud Messaging (FCM).
+* Responsive **web dashboard** to view wallet, send transactions, and manage account.
+* **Mobile integration-ready** using React Native.
+* High security: private key **always stays on the user's device**.
+
+## Technologies Used
+
+### Backend
+
+* **Node.js** & **Express** for REST API server.
+* **PostgreSQL** for user data storage.
+* **bcrypt** for secure password hashing.
+* **JWT** for authentication and session management.
+* **Firebase Admin SDK** for push notifications.
+
+### Blockchain
+
+* **Solana Web3.js** for interacting with the Devnet and handling SOL transactions.
+
+### Web Frontend
+
+* **HTML5 / CSS3 / Vanilla JavaScript** for the dashboard.
+* Responsive layout with integrated wallet management.
+
+### Mobile (work-in-progress)
+
+* **React Native** for cross-platform app development.
+* **Android Studio** for testing and building on Android devices.
+
+### Deployment
+
+* Configured for deployment on **Render** (currently used as repository and test server).
+
+## Local Setup
+
+1. Clone the repository:
+
+   ```bash
+   git clone <repo-url>
+   ```
+2. Install dependencies:
+
+   ```bash
+   npm install
+   ```
+3. Configure environment variables:
+
+   * `DATABASE_URL` → PostgreSQL database URL
+   * `JWT_SECRET` → JWT secret key
+   * `GOOGLE_APPLICATION_CREDENTIALS_JSON` → Firebase credentials JSON
+4. Start the server:
+
+   ```bash
+   npm start
+   ```
+
+   The server will be available at `http://localhost:3000` (or configured port).
+
+## Notes
+
+* The application is **active and functional**, but some features are still in development or testing.
+* The backend manages both the web dashboard and future mobile integration.
+* Some features, especially transactions and push notifications, require **active keys and credentials** to work properly.
+
+---
+
+#IT
+
 # PrimeGenesis Dashboard
 
 Questo progetto è un **side project in fase di sviluppo** per un futuro MVP (Minimum Viable Product).
@@ -85,81 +168,4 @@ La **sicurezza è massima**: la chiave privata dell'utente **non lascia mai il t
 
 ---
 
-# English Version
 
-# PrimeGenesis Dashboard
-
-This project is a **side project in active development** for a future MVP (Minimum Viable Product).
-
-The application allows users to register, login, and send transactions on the **Solana Devnet**, with push notifications to request transaction signing. ⚡ The app is live, but new features are continuously being developed.
-
-**Maximum security:** the user's private key **never leaves their device**.
-
-## Main Features
-
-* Secure **registration and login** using password hashing and JWT.
-* **User session management** via secure cookies.
-* **Sending SOL transactions** on the Solana Devnet.
-* **Push notifications** via Firebase Cloud Messaging (FCM).
-* Responsive **web dashboard** to view wallet, send transactions, and manage account.
-* **Mobile integration-ready** using React Native.
-* High security: private key **always stays on the user's device**.
-
-## Technologies Used
-
-### Backend
-
-* **Node.js** & **Express** for REST API server.
-* **PostgreSQL** for user data storage.
-* **bcrypt** for secure password hashing.
-* **JWT** for authentication and session management.
-* **Firebase Admin SDK** for push notifications.
-
-### Blockchain
-
-* **Solana Web3.js** for interacting with the Devnet and handling SOL transactions.
-
-### Web Frontend
-
-* **HTML5 / CSS3 / Vanilla JavaScript** for the dashboard.
-* Responsive layout with integrated wallet management.
-
-### Mobile (work-in-progress)
-
-* **React Native** for cross-platform app development.
-* **Android Studio** for testing and building on Android devices.
-
-### Deployment
-
-* Configured for deployment on **Render** (currently used as repository and test server).
-
-## Local Setup
-
-1. Clone the repository:
-
-   ```bash
-   git clone <repo-url>
-   ```
-2. Install dependencies:
-
-   ```bash
-   npm install
-   ```
-3. Configure environment variables:
-
-   * `DATABASE_URL` → PostgreSQL database URL
-   * `JWT_SECRET` → JWT secret key
-   * `GOOGLE_APPLICATION_CREDENTIALS_JSON` → Firebase credentials JSON
-4. Start the server:
-
-   ```bash
-   npm start
-   ```
-
-   The server will be available at `http://localhost:3000` (or configured port).
-
-## Notes
-
-* The application is **active and functional**, but some features are still in development or testing.
-* The backend manages both the web dashboard and future mobile integration.
-* Some features, especially transactions and push notifications, require **active keys and credentials** to work properly.
