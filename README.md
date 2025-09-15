@@ -79,7 +79,7 @@ The application allows users to register, login, and send transactions on the **
 
 ---
 
-#IT
+# IT
 
 # PrimeGenesis Dashboard
 
